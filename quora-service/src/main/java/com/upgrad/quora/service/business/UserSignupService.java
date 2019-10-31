@@ -48,6 +48,7 @@ public class UserSignupService {
         if(userDaoAuthToken == null) {
             throw new SignOutRestrictedException("SGR-001", "User is not Signed in");
         }
+        //update the logout time and return the user entity
         userDaoAuthToken.setLogutTime(ZonedDateTime.now());
         return userDaoAuthToken.getUser();
     }
