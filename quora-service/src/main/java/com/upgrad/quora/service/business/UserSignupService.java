@@ -1,13 +1,16 @@
 package com.upgrad.quora.service.business;
 
 import com.upgrad.quora.service.dao.UserDao;
+import com.upgrad.quora.service.entity.UserAuthTokenEntity;
 import com.upgrad.quora.service.entity.UserEntity;
+import com.upgrad.quora.service.exception.SignOutRestrictedException;
 import com.upgrad.quora.service.exception.SignUpRestrictedException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.ZonedDateTime;
 import java.util.UUID;
 
 @Service
@@ -37,5 +40,16 @@ public class UserSignupService {
         userEntity.setPassword(encryptedValues[1]);
         userEntity.setUuid(UUID.randomUUID().toString());
         return userDao.createUser(userEntity);
+    }
+
+    public UserEntity signout(final String authorization) throws SignOutRestrictedException {
+        //I need to search user auth token table
+        UserAuthTokenEntity userDaoAuthToken = userDao.getAuthToken(authorization);
+        if(userDaoAuthToken == null) {
+            throw new SignOutRestrictedException("SGR-001", "User is not Signed in");
+        }
+        //update the logout time and return the user entity
+        userDaoAuthToken.setLogutTime(ZonedDateTime.now());
+        return userDaoAuthToken.getUser();
     }
 }
