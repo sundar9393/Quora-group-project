@@ -9,8 +9,8 @@ import javax.validation.constraints.Size;
 @NamedQueries(
         {
         @NamedQuery(name = "userByUsername", query = "Select u from UserEntity u where u.userName = :username"),
-        @NamedQuery(name = "userByEmail", query = "select u from UserEntity u where u.email = :email")
-
+        @NamedQuery(name = "userByEmail", query = "select u from UserEntity u where u.email = :email"),
+        @NamedQuery(name = "userByUuid", query = "select u from UserEntity u where u.uuid = :uuid")
         }
 )
 public class UserEntity {
