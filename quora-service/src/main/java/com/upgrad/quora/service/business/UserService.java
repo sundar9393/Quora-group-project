@@ -3,8 +3,10 @@ package com.upgrad.quora.service.business;
 import com.upgrad.quora.service.dao.UserDao;
 import com.upgrad.quora.service.entity.UserAuthTokenEntity;
 import com.upgrad.quora.service.entity.UserEntity;
+import com.upgrad.quora.service.exception.AuthorizationFailedException;
 import com.upgrad.quora.service.exception.SignOutRestrictedException;
 import com.upgrad.quora.service.exception.SignUpRestrictedException;
+import com.upgrad.quora.service.exception.UserNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
@@ -14,7 +16,7 @@ import java.time.ZonedDateTime;
 import java.util.UUID;
 
 @Service
-public class UserSignupService {
+public class UserService {
 
     @Autowired
     UserDao userDao;
@@ -51,5 +53,21 @@ public class UserSignupService {
         //update the logout time and return the user entity
         userDaoAuthToken.setLogutTime(ZonedDateTime.now());
         return userDaoAuthToken.getUser();
+    }
+
+    public UserEntity getUser(final String uuid, final String accessToken) throws AuthorizationFailedException, UserNotFoundException {
+        UserAuthTokenEntity userAuthToken = userDao.getAuthToken(accessToken);
+        if(userAuthToken == null) {
+            throw new AuthorizationFailedException("ATHR-001", "User has not signed in");
+        }
+        if(userAuthToken.getLoginTime().isBefore(userAuthToken.getLogutTime())) {
+            throw new AuthorizationFailedException("ATHR-002", "User is signed out.Sign in first to get user details");
+        }
+        UserEntity userEntity = userDao.getUserByUuid(uuid);
+        if(userEntity == null) {
+            throw new UserNotFoundException("USR-001", "User with entered uuid does not exist");
+        }
+        return userEntity;
+
     }
 }

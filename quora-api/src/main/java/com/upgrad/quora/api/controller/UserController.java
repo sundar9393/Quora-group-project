@@ -5,7 +5,7 @@ import com.upgrad.quora.api.model.SignoutResponse;
 import com.upgrad.quora.api.model.SignupUserRequest;
 import com.upgrad.quora.api.model.SignupUserResponse;
 import com.upgrad.quora.service.business.AuthenticationService;
-import com.upgrad.quora.service.business.UserSignupService;
+import com.upgrad.quora.service.business.UserService;
 import com.upgrad.quora.service.entity.UserAuthTokenEntity;
 import com.upgrad.quora.service.entity.UserEntity;
 import com.upgrad.quora.service.exception.AuthenticationFailedException;
@@ -28,7 +28,7 @@ import java.util.Base64;
 public class UserController {
 
     @Autowired
-    private UserSignupService userSignupService;
+    private UserService userService;
 
     @Autowired
     private AuthenticationService authenticationService;
@@ -47,7 +47,7 @@ public class UserController {
         userEntity.setPassword(signupUserRequest.getPassword());
         userEntity.setRole("nonadmin");
         //Calling service
-        UserEntity newUser = userSignupService.signup(userEntity);
+        UserEntity newUser = userService.signup(userEntity);
         SignupUserResponse signupUserResponse = new SignupUserResponse().id(newUser.getUuid()).status("USER SUCCESSFULLY REGISTERED");
         return new ResponseEntity<SignupUserResponse>(signupUserResponse,HttpStatus.CREATED);
     }
@@ -75,7 +75,7 @@ public class UserController {
     @RequestMapping(method = RequestMethod.POST, path = "user/signout", consumes = MediaType.APPLICATION_JSON_UTF8_VALUE, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     public ResponseEntity<SignoutResponse> signout(@RequestHeader("authorization")final String accessToken) throws SignOutRestrictedException {
 
-        UserEntity userEntity = userSignupService.signout(accessToken);
+        UserEntity userEntity = userService.signout(accessToken);
         SignoutResponse signoutResponse = new SignoutResponse().id(userEntity.getUuid()).message("Signed out successfully");
         return new ResponseEntity<SignoutResponse>(signoutResponse, HttpStatus.OK);
     }

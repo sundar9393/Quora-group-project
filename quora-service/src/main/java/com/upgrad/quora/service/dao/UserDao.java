@@ -14,7 +14,7 @@ public class UserDao {
     @PersistenceContext
     private EntityManager entityManager;
 
-    public UserEntity getUserByUsername(String userName) {
+    public UserEntity getUserByUsername(final String userName) {
         try {
             return entityManager.createNamedQuery("userByUsername", UserEntity.class).setParameter("username", userName).getSingleResult();
         } catch (NoResultException nre) {
@@ -24,13 +24,21 @@ public class UserDao {
     }
 
 
-    public UserEntity getUserByEmail(String email) {
+    public UserEntity getUserByEmail(final String email) {
         try {
             return entityManager.createNamedQuery("userByEmail", UserEntity.class).setParameter("email",email).getSingleResult();
         } catch (NoResultException nre) {
             return null;
         }
 
+    }
+
+    public UserEntity getUserByUuid(final String uuid) {
+        try {
+            return entityManager.createNamedQuery("userByUuid", UserEntity.class).setParameter("uuid", uuid).getSingleResult();
+        } catch(NoResultException nre) {
+            return null;
+        }
     }
 
 
