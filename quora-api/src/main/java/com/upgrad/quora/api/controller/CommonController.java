@@ -20,7 +20,7 @@ public class CommonController {
 
 
     @RequestMapping(method = RequestMethod.GET, path = "/userprofile/{userId}", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
-    public ResponseEntity<UserDetailsResponse> getUserDetails(@PathVariable("id") final String id, @RequestHeader("authorization") final String authorization) throws AuthorizationFailedException, UserNotFoundException {
+    public ResponseEntity<UserDetailsResponse> getUserDetails(@PathVariable("userId") final String id, @RequestHeader("authorization") final String authorization) throws AuthorizationFailedException, UserNotFoundException {
         UserEntity user = userService.getUser(id, authorization);
         //Map response object values from user entity returned by service
         UserDetailsResponse userDetailsResponse = new UserDetailsResponse();
