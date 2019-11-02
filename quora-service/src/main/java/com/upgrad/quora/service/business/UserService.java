@@ -60,8 +60,10 @@ public class UserService {
         if(userAuthToken == null) {
             throw new AuthorizationFailedException("ATHR-001", "User has not signed in");
         }
-        if(userAuthToken.getLoginTime().isBefore(userAuthToken.getLogutTime())) {
-            throw new AuthorizationFailedException("ATHR-002", "User is signed out.Sign in first to get user details");
+        if(userAuthToken.getLogutTime()!=null) {
+            if ((userAuthToken.getLoginTime().isBefore(userAuthToken.getLogutTime()))) {
+                throw new AuthorizationFailedException("ATHR-002", "User is signed out.Sign in first to get user details");
+            }
         }
         UserEntity userEntity = userDao.getUserByUuid(uuid);
         if(userEntity == null) {
