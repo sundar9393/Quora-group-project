@@ -10,6 +10,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
+
 /*
 Service class that interact with DAO classes
  */
@@ -37,4 +39,19 @@ public class QuestionService {
 
       return questionDao.createQuestion(question);
     }
+
+    public List<QuestionEntity> getAllQuestions(final String accessToken) throws AuthorizationFailedException {
+        UserAuthTokenEntity userAuthToken = userDao.getAuthToken(accessToken);
+        if(userAuthToken == null) {
+            throw new AuthorizationFailedException("ATHR-001", "User has not signed in");
+        }
+        if(userAuthToken.getLogutTime()!=null) {
+            if(userAuthToken.getLoginTime().isBefore(userAuthToken.getLogutTime())) {
+                throw new AuthorizationFailedException("ATHR-002","User is signed out.Sign in first to post a question");
+            }
+        }
+
+        return questionDao.getAllQuestions();
+    }
+
 }
