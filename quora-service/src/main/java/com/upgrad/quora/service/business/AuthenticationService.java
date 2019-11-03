@@ -4,6 +4,7 @@ import com.upgrad.quora.service.dao.UserDao;
 import com.upgrad.quora.service.entity.UserAuthTokenEntity;
 import com.upgrad.quora.service.entity.UserEntity;
 import com.upgrad.quora.service.exception.AuthenticationFailedException;
+import com.upgrad.quora.service.exception.AuthorizationFailedException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -44,6 +45,19 @@ public class AuthenticationService {
             throw new AuthenticationFailedException("ATH-002", "Password failed");
         }
 
+    }
+
+    public UserAuthTokenEntity signInValidation(final String accessToken) throws AuthorizationFailedException {
+        UserAuthTokenEntity userAuthToken = userDao.getAuthToken(accessToken);
+        if(userAuthToken == null) {
+            throw new AuthorizationFailedException("ATHR-001", "User has not signed in");
+        }
+        if(userAuthToken.getLogutTime()!=null) {
+            if(userAuthToken.getLoginTime().isBefore(userAuthToken.getLogutTime())) {
+                throw new AuthorizationFailedException("ATHR-002","User is signed out.Sign in first to post a question");
+            }
+        }
+        return userAuthToken;
     }
 
 }
