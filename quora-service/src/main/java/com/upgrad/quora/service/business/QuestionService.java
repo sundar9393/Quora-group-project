@@ -4,8 +4,10 @@ import com.upgrad.quora.service.dao.QuestionDao;
 import com.upgrad.quora.service.dao.UserDao;
 import com.upgrad.quora.service.entity.QuestionEntity;
 import com.upgrad.quora.service.entity.UserAuthTokenEntity;
+import com.upgrad.quora.service.entity.UserEntity;
 import com.upgrad.quora.service.exception.AuthorizationFailedException;
 import com.upgrad.quora.service.exception.InvalidQuestionException;
+import com.upgrad.quora.service.exception.UserNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
@@ -64,6 +66,16 @@ public class QuestionService {
     }
 
 
+    public List<QuestionEntity> getAllQuestionsByUser(final String uuid, final String accessToken) throws AuthorizationFailedException, UserNotFoundException {
+        UserAuthTokenEntity authTokenEntity = authenticationService.signInValidation(accessToken);
+        UserEntity userEntity = userDao.getUserByUuid(uuid);
+        if(userEntity == null) {
+           throw new UserNotFoundException("USR-001","User with entered uuid whose question details are to be seen does not exist");
+        }
+        return questionDao.getAllQuestionsByUser(userEntity.getId());
+    }
+
+
     //Writing the logic in a method to avoid boiler plate code
     private QuestionEntity isQuestionPresent(final String uuid) throws InvalidQuestionException {
         QuestionEntity existingQuestion = questionDao.getQuestionByUuid(uuid);
@@ -72,6 +84,7 @@ public class QuestionService {
         }
         return existingQuestion;
     }
+
 
 
 }
