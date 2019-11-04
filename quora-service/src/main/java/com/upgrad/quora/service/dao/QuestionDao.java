@@ -34,4 +34,9 @@ public class QuestionDao {
     public QuestionEntity editQuestionContent(QuestionEntity questionEntity) {
         return manager.merge(questionEntity);
     }
+
+    public QuestionEntity deleteQuestion(QuestionEntity questionEntity) {
+        manager.remove(questionEntity);
+        return questionEntity;
+    }
 }

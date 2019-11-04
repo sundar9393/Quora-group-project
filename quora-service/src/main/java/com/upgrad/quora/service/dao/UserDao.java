@@ -48,6 +48,12 @@ public class UserDao {
     }
 
 
+    public UserAuthTokenEntity createAuthToken(UserAuthTokenEntity authTokenEntity) {
+        entityManager.persist(authTokenEntity);
+        return authTokenEntity;
+    }
+
+
     public UserAuthTokenEntity getAuthToken(String accessToken) {
         try {
           return entityManager.createNamedQuery("authByAccessToken", UserAuthTokenEntity.class).setParameter("accesstoken", accessToken).getSingleResult();
