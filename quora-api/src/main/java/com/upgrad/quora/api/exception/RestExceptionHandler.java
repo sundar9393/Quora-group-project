@@ -35,4 +35,9 @@ public class RestExceptionHandler {
     public ResponseEntity<ErrorResponse> invalidQuestionException(InvalidQuestionException ques, WebRequest request) {
         return new ResponseEntity<ErrorResponse>(new ErrorResponse().code(ques.getCode()).message(ques.getErrorMessage()), HttpStatus.BAD_REQUEST);
     }
+
+    @ExceptionHandler(AnswerNotFoundException.class)
+    public ResponseEntity<ErrorResponse> answerNotFoundException(AnswerNotFoundException ans, WebRequest request) {
+        return new ResponseEntity<ErrorResponse>(new ErrorResponse().code(ans.getCode()).message(ans.getErrorMessage()), HttpStatus.NOT_FOUND);
+    }
 }
