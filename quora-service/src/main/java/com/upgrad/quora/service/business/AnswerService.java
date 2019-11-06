@@ -13,6 +13,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
+
 @Service
 public class AnswerService {
 
@@ -59,6 +61,17 @@ public class AnswerService {
         return answerDao.deleteAnswer(answerEntity);
     }
 
+
+    public List<AnswerEntity> getAllAnswersToQuestion(final String questionUuid, final String accessToken) throws AuthorizationFailedException, InvalidQuestionException {
+        UserAuthTokenEntity userAuthToken = authenticationService.signInValidation(accessToken);
+        QuestionEntity questionEntity = questionDao.getQuestionByUuid(questionUuid);
+        if(questionEntity == null) {
+            throw new InvalidQuestionException("QUES-001", "The question with entered uuid whose details are to be seen does not exist");
+        }
+        
+        return answerDao.getAllAnswersForQuestion(questionEntity.getId());
+    }
+
     private AnswerEntity isAnswerPresent(final String answerUuid) throws AnswerNotFoundException {
         AnswerEntity answerEntity = answerDao.getAnswerByUuid(answerUuid);
         if(answerEntity == null) {
@@ -66,4 +79,6 @@ public class AnswerService {
         }
         return answerEntity;
     }
+
+
 }

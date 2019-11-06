@@ -13,6 +13,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.ZonedDateTime;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.UUID;
 
 @RestController
@@ -21,6 +23,7 @@ public class AnswerController {
 
     @Autowired
     AnswerService answerService;
+    
 
     @RequestMapping(method = RequestMethod.POST, path = "/question/{questionId}/answer/create", consumes = MediaType.APPLICATION_JSON_UTF8_VALUE, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     public ResponseEntity<AnswerResponse> createAnswer(@PathVariable("questionId") final String questionUuid,
@@ -54,5 +57,20 @@ public class AnswerController {
         AnswerEntity deletedAnswer = answerService.deleteAnswer(answerUuid,accessToken);
         AnswerDeleteResponse answerDeleteResponse = new AnswerDeleteResponse().id(deletedAnswer.getUuid()).status("ANSWER DELETED");
         return new ResponseEntity<AnswerDeleteResponse>(answerDeleteResponse,HttpStatus.OK);
+    }
+
+
+    @RequestMapping(method = RequestMethod.GET, path = "/answer/all/{questionId}", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+    public ResponseEntity<List<AnswerDetailsResponse>> getAllAnswersToQuestion(@PathVariable("questionId") final String questionUuid,
+                                                                               @RequestHeader("authorization") final String accessToken) throws AuthorizationFailedException, InvalidQuestionException {
+
+        List<AnswerEntity> answers = answerService.getAllAnswersToQuestion(questionUuid,accessToken);
+
+        List<AnswerDetailsResponse> answerDetailsResponses = new ArrayList<>();
+        for(AnswerEntity answer : answers) {
+            answerDetailsResponses.add(new AnswerDetailsResponse().answerContent(answer.getAnswerContent())
+                    .id(answer.getUuid()).questionContent(answer.getQuestion().getContent()));
+        }
+        return new ResponseEntity<List<AnswerDetailsResponse>>(answerDetailsResponses,HttpStatus.OK);
     }
 }
