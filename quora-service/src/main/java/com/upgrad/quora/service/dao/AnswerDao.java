@@ -29,4 +29,9 @@ public class AnswerDao {
     public AnswerEntity editAnswer(AnswerEntity answerEntity) {
         return manager.merge(answerEntity);
     }
+
+    public AnswerEntity deleteAnswer(AnswerEntity answerEntity) {
+        manager.remove(answerEntity);
+        return answerEntity;
+    }
 }

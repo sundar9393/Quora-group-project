@@ -41,14 +41,29 @@ public class AnswerService {
     @Transactional(propagation = Propagation.REQUIRED)
     public AnswerEntity editAnswer(final String answerUuid, final String accessToken, final String content) throws AuthorizationFailedException, AnswerNotFoundException {
         UserAuthTokenEntity userAuthToken = authenticationService.signInValidation(accessToken);
-        AnswerEntity answerEntity = answerDao.getAnswerByUuid(answerUuid);
-        if(answerEntity == null) {
-            throw new AnswerNotFoundException("ANS-001","Entered answer uuid does not exist");
-        }
+        AnswerEntity answerEntity = isAnswerPresent(answerUuid);
         if(userAuthToken.getUser().getId() != answerEntity.getUser().getId()) {
             throw new AuthorizationFailedException("ATHR-003", "Only the answer owner can edit the answer");
         }
         answerEntity.setAnswerContent(content);
         return answerDao.editAnswer(answerEntity);
+    }
+
+    @Transactional(propagation = Propagation.REQUIRED)
+    public AnswerEntity deleteAnswer(final String answerUuid, final String accessToken) throws AuthorizationFailedException, AnswerNotFoundException {
+        UserAuthTokenEntity userAuthToken = authenticationService.signInValidation(accessToken);
+        AnswerEntity answerEntity = isAnswerPresent(answerUuid);
+        if((answerEntity.getUser().getId()!=userAuthToken.getUser().getId())&&(userAuthToken.getUser().getRole().equals("nonadmin"))) {
+            throw new AuthorizationFailedException("ATHR-003","Only the answer owner or admin can delete the answer");
+        }
+        return answerDao.deleteAnswer(answerEntity);
+    }
+
+    private AnswerEntity isAnswerPresent(final String answerUuid) throws AnswerNotFoundException {
+        AnswerEntity answerEntity = answerDao.getAnswerByUuid(answerUuid);
+        if(answerEntity == null) {
+            throw new AnswerNotFoundException("ANS-001","Entered answer uuid does not exist");
+        }
+        return answerEntity;
     }
 }
