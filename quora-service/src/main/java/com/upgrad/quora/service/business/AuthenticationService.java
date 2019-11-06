@@ -7,8 +7,11 @@ import com.upgrad.quora.service.exception.AuthenticationFailedException;
 import com.upgrad.quora.service.exception.AuthorizationFailedException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Propagation;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.time.ZonedDateTime;
+import java.util.UUID;
 
 @Service
 public class AuthenticationService {
@@ -19,8 +22,12 @@ public class AuthenticationService {
     @Autowired
     private PasswordCryptographyProvider cryptographyProvider;
 
+    @Transactional(propagation = Propagation.REQUIRED)
     public UserAuthTokenEntity authenticate(final String username, final String password) throws AuthenticationFailedException {
-        UserEntity userEntity = userDao.getUserByEmail(username);
+
+        UserEntity userEntity = userDao.getUserByUsername(username);
+
+        //UserEntity userEntity = userDao.getUserByEmail(username);
 
         if(userEntity == null){
             throw new AuthenticationFailedException("ATH-001", "This username does not exist");
@@ -39,14 +46,20 @@ public class AuthenticationService {
 
             userAuthToken.setLoginTime(now);
             userAuthToken.setExpiryTime(expiresAt);
+            //SETTING UUID FOR THE AUTH TOKEN
+            userAuthToken.setUuid(UUID.randomUUID().toString());
 
-            return userAuthToken;
+            //PERSISTING AUTH TOKEN FOR FURTHER USE
+            return userDao.createAuthToken(userAuthToken);
+
         } else{
             throw new AuthenticationFailedException("ATH-002", "Password failed");
         }
 
     }
 
+
+    //Writing the logic in a method to avoid boiler plate code
     public UserAuthTokenEntity signInValidation(final String accessToken) throws AuthorizationFailedException {
         UserAuthTokenEntity userAuthToken = userDao.getAuthToken(accessToken);
         if(userAuthToken == null) {
