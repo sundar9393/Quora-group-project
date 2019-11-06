@@ -34,4 +34,13 @@ public class QuestionDao {
     public QuestionEntity editQuestionContent(QuestionEntity questionEntity) {
         return manager.merge(questionEntity);
     }
+
+    public QuestionEntity deleteQuestion(QuestionEntity questionEntity) {
+        manager.remove(questionEntity);
+        return questionEntity;
+    }
+
+    public List<QuestionEntity> getAllQuestionsByUser(final Integer userId) {
+        return manager.createNamedQuery("questionByUserid",QuestionEntity.class).setParameter("userId",userId).getResultList();
+    }
 }
