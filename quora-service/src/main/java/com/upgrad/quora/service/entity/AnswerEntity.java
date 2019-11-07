@@ -9,7 +9,12 @@ import java.time.ZonedDateTime;
 @NamedQueries(
         {
                 @NamedQuery(name = "getAnswerByUuid", query = "select a from AnswerEntity a where a.uuid = :uuid"),
+/*<<<<<<< suraj-user-controller
+Resolving conflict
+Incorrect implementation.
                 @NamedQuery(name = "getAllAnswersByUserId", query = "select a from AnswerEntity a where a.user_id = :user_id")
+=======*/
+                @NamedQuery(name = "getAnswerForQuestion", query = "select a from AnswerEntity a where a.question.id = :id")
         }
 )
 public class AnswerEntity {
