@@ -3,15 +3,11 @@ package com.upgrad.quora.service.business;
 import com.upgrad.quora.service.dao.AnswerDao;
 import com.upgrad.quora.service.dao.QuestionDao;
 import com.upgrad.quora.service.dao.UserDao;
-import com.upgrad.quora.service.entity.AnswerEntity;
-import com.upgrad.quora.service.entity.QuestionEntity;
 import com.upgrad.quora.service.entity.UserAuthTokenEntity;
 import com.upgrad.quora.service.entity.UserEntity;
 import com.upgrad.quora.service.exception.AuthorizationFailedException;
 import com.upgrad.quora.service.exception.UserNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
-
-import java.util.List;
 
 public class AdminService {
     @Autowired
@@ -50,28 +46,7 @@ public class AdminService {
         if (userEntity == null) {
             throw new UserNotFoundException("USR-001", "User with entered uuid to be deleted does not exist");
         }
-        // Delete All Answers by User
-        List<AnswerEntity> answerEntities = answerDao.getAllAnswersByUserId(userEntity.getId());
 
-        if (answerEntities.size() > 0) {
-
-            for (AnswerEntity answerEntity : answerEntities) {
-                answerDao.deleteAnswer(answerEntity);
-            }
-
-        }
-        //Delete All Questions by User UUID
-        List<QuestionEntity> questionEntities = questionDao.getAllQuestionsByUser(userEntity.getId());
-
-        if (questionEntities.size() > 0) {
-
-            for (QuestionEntity questionEntity : questionEntities) {
-                questionDao.deleteQuestion(questionEntity);
-            }
-
-        }
-        //Delete User Auth Token Entity for the User
-        userDao.deleteUserAuth(userDao.getAuthTokenByUserId(userEntity.getId()));
         //Delete User Profile for the User
         userDao.deleteUser(userDao.getUserByUuid(uuid));
         //Return the UUID of the deleted User
