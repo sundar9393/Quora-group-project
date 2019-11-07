@@ -3,6 +3,7 @@ package com.upgrad.quora.service.entity;
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 import java.time.ZonedDateTime;
+import java.util.List;
 
 @Entity
 @Table(name = "question")
@@ -35,6 +36,9 @@ public class QuestionEntity {
     @JoinColumn(name = "user_id")
     @NotNull
     private UserEntity user;
+
+    @OneToMany(mappedBy = "question", cascade = CascadeType.REMOVE, fetch = FetchType.EAGER)
+    private List<AnswerEntity> answers;
 
     public QuestionEntity() {
 

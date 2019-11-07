@@ -13,17 +13,22 @@ public class RestExceptionHandler {
 
     @ExceptionHandler(SignUpRestrictedException.class)
     public ResponseEntity<ErrorResponse> signupRestrictedException(SignUpRestrictedException sgr, WebRequest request) {
-        return new ResponseEntity<ErrorResponse>(new ErrorResponse().code(sgr.getCode()).message(sgr.getErrorMessage()), HttpStatus.BAD_REQUEST);
+        return new ResponseEntity<ErrorResponse>(new ErrorResponse().code(sgr.getCode()).message(sgr.getErrorMessage()), HttpStatus.CONFLICT);
+    }
+
+    @ExceptionHandler(SignOutRestrictedException.class)
+    public ResponseEntity<ErrorResponse> signOutRestrictedException(SignOutRestrictedException sgr, WebRequest request) {
+        return new ResponseEntity<ErrorResponse>(new ErrorResponse().code(sgr.getCode()).message(sgr.getErrorMessage()), HttpStatus.UNAUTHORIZED);
     }
 
     @ExceptionHandler(AuthenticationFailedException.class)
     public ResponseEntity<ErrorResponse> authenticationFailedException(AuthenticationFailedException afe, WebRequest request) {
-        return new ResponseEntity<ErrorResponse>(new ErrorResponse().code(afe.getCode()).message(afe.getErrorMessage()), HttpStatus.NOT_FOUND);
+        return new ResponseEntity<ErrorResponse>(new ErrorResponse().code(afe.getCode()).message(afe.getErrorMessage()), HttpStatus.FORBIDDEN);
     }
 
     @ExceptionHandler(AuthorizationFailedException.class)
     public ResponseEntity<ErrorResponse> authorizationFailedException(AuthorizationFailedException athr, WebRequest request) {
-        return new ResponseEntity<ErrorResponse>(new ErrorResponse().code(athr.getCode()).message(athr.getErrorMessage()), HttpStatus.UNAUTHORIZED);
+        return new ResponseEntity<ErrorResponse>(new ErrorResponse().code(athr.getCode()).message(athr.getErrorMessage()), HttpStatus.FORBIDDEN);
     }
 
     @ExceptionHandler(UserNotFoundException.class)
@@ -33,7 +38,7 @@ public class RestExceptionHandler {
 
     @ExceptionHandler(InvalidQuestionException.class)
     public ResponseEntity<ErrorResponse> invalidQuestionException(InvalidQuestionException ques, WebRequest request) {
-        return new ResponseEntity<ErrorResponse>(new ErrorResponse().code(ques.getCode()).message(ques.getErrorMessage()), HttpStatus.BAD_REQUEST);
+        return new ResponseEntity<ErrorResponse>(new ErrorResponse().code(ques.getCode()).message(ques.getErrorMessage()), HttpStatus.NOT_FOUND);
     }
 
     @ExceptionHandler(AnswerNotFoundException.class)
