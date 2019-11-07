@@ -62,20 +62,11 @@ public class UserDao {
         }
     }
 
-    public UserAuthTokenEntity getAuthTokenByUserId(final Integer userId) {
-        try {
-            return entityManager.createNamedQuery("authTokenByUserId", UserAuthTokenEntity.class).setParameter("user_id", userId).getSingleResult();
-        } catch(NoResultException nre) {
-            return null;
-        }
-    }
 
-    public void deleteUser(final UserEntity userEntity) {
+    public UserEntity deleteUser(final UserEntity userEntity) {
         entityManager.remove(userEntity);
+        return userEntity;
     }
 
-    public void deleteUserAuth(final UserAuthTokenEntity userAuthTokenEntity) {
-        entityManager.remove(userAuthTokenEntity);
-    }
 
 }

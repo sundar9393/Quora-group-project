@@ -69,13 +69,13 @@ public class UserEntity {
     @NotNull
     private String mobile;
 
-    @OneToMany(mappedBy = "user_id", cascade = CascadeType.REMOVE)
+    @OneToMany(mappedBy = "user", cascade = CascadeType.REMOVE)
     List<AnswerEntity> answers;
 
-    @OneToMany(mappedBy = "user_id", cascade = CascadeType.REMOVE)
+    @OneToMany(mappedBy = "user", cascade = CascadeType.REMOVE)
     List<QuestionEntity> questions;
 
-    @OneToMany(mappedBy = "user_id", cascade = CascadeType.REMOVE)
+    @OneToMany(mappedBy = "user", cascade = CascadeType.REMOVE)
     List<UserAuthTokenEntity> authTokens;
 
     public UserEntity () {
