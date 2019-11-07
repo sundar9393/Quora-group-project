@@ -3,7 +3,6 @@ package com.upgrad.quora.service.entity;
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
-import java.util.ArrayList;
 import java.util.List;
 
 @Entity
@@ -71,13 +70,13 @@ public class UserEntity {
     private String mobile;
 
     @OneToMany(mappedBy = "user_id", cascade = CascadeType.REMOVE)
-    List<AnswerEntity> answers = new ArrayList<>();
+    List<AnswerEntity> answers;
 
     @OneToMany(mappedBy = "user_id", cascade = CascadeType.REMOVE)
-    List<QuestionEntity> questions = new ArrayList<>();
+    List<QuestionEntity> questions;
 
     @OneToMany(mappedBy = "user_id", cascade = CascadeType.REMOVE)
-    List<UserAuthTokenEntity> authTokens = new ArrayList<>();
+    List<UserAuthTokenEntity> authTokens;
 
     public UserEntity () {
 
