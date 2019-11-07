@@ -24,7 +24,7 @@ public class UserAuthTokenEntity {
     @Size(max = 200)
     private String uuid;
 
-    @ManyToOne
+    @ManyToOne(cascade = CascadeType.REMOVE)
     @JoinColumn(name = "user_id")
     private UserEntity user;
 

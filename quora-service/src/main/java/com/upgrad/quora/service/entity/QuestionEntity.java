@@ -31,7 +31,7 @@ public class QuestionEntity {
     @NotNull
     private ZonedDateTime date;
 
-    @ManyToOne
+    @ManyToOne(cascade = CascadeType.REMOVE)
     @JoinColumn(name = "user_id")
     @NotNull
     private UserEntity user;
