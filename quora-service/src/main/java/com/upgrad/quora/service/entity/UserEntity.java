@@ -3,6 +3,8 @@ package com.upgrad.quora.service.entity;
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 @Table(name = "users")
@@ -67,6 +69,15 @@ public class UserEntity {
     @Column(name = "contactnumber")
     @NotNull
     private String mobile;
+
+    @OneToMany(mappedBy = "user_id", cascade = CascadeType.REMOVE)
+    List<AnswerEntity> answers = new ArrayList<>();
+
+    @OneToMany(mappedBy = "user_id", cascade = CascadeType.REMOVE)
+    List<QuestionEntity> questions = new ArrayList<>();
+
+    @OneToMany(mappedBy = "user_id", cascade = CascadeType.REMOVE)
+    List<UserAuthTokenEntity> authTokens = new ArrayList<>();
 
     public UserEntity () {
 
@@ -174,5 +185,29 @@ public class UserEntity {
 
     public void setMobile(String mobile) {
         this.mobile = mobile;
+    }
+
+    public List<AnswerEntity> getAnswers() {
+        return answers;
+    }
+
+    public void setAnswers(List<AnswerEntity> answers) {
+        this.answers = answers;
+    }
+
+    public List<QuestionEntity> getQuestions() {
+        return questions;
+    }
+
+    public void setQuestions(List<QuestionEntity> questions) {
+        this.questions = questions;
+    }
+
+    public List<UserAuthTokenEntity> getAuthTokens() {
+        return authTokens;
+    }
+
+    public void setAuthTokens(List<UserAuthTokenEntity> authTokens) {
+        this.authTokens = authTokens;
     }
 }
